@@ -1,3 +1,4 @@
+#include "ikcp.h"
 #include "kcpdemo.h"
 
 IUINT64 *latencyStore;
@@ -12,19 +13,24 @@ void echo_kcp0(udp_holder *holder) {
   IUINT64 nsec;
   timestamp tsx;
   while (1) {
+    fetch_buf(kcp);
     tsx = iclockX();
     ikcp_update(kcp, tsx.currentMills);
     rt = ikcp_recv(kcp, buf, DATA_SIZE);
     if (rt < 0) {
+#if __DEBUG
+      printf("%s ikcp_recv failed: %d, %d|%d\n", holder->name, rt,
+             holder->kcp->nrcv_buf, holder->kcp->nrcv_que);
+#endif
       continue;
     }
     p = buf;
     p = decode64u(p, &sec);
     p = decode64u(p, &nsec);
-    latencyStore[count++] = (tsx.sec - sec) * 1000000000L + (tsx.nsec - nsec);
+    latencyStore[count++] = (tsx.sec - sec) * 1000000000UL + tsx.nsec - nsec;
 #if __DEBUG
-    printf("%s received: %lld.%lld, %d packages\n", holder->name, sec, nsec,
-           count);
+    printf("%s received: %llu.%llu, current: %llu.%llu, %d packages\n",
+           holder->name, sec, nsec, tsx.sec, tsx.nsec, count);
 #endif
     if (count >= TIMES) {
       holder->active = 0;

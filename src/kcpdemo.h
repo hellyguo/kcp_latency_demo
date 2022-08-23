@@ -49,6 +49,22 @@ struct timestamp {
 
 typedef struct timestamp timestamp;
 
+pthread_mutex_t lock;
+
+const int max_fetch_times = 100;
+
+long long padding1[7];
+long long widx = 0;
+long long padding2[7];
+long long ridx = 0;
+long long padding3[7];
+
+long *recv_buf_ptr;
+int *recv_buf_len;
+
+#define LOCK pthread_mutex_lock(&lock)
+#define UNLOCK pthread_mutex_unlock(&lock)
+
 /* get system time */
 static inline timestamp iclockX() {
   struct timespec ts;
@@ -102,8 +118,36 @@ int udp_send(const char *buf, int len, ikcpcb *kcp, void *user) {
 #if __DEBUG
   printf("%s try to send var udp: %d bytes\n", holder->name, len);
 #endif
-  return sendto(*(holder->send_fd), buf, len, 0,
-                (struct sockaddr *)(holder->send_addr), SIZE);
+  int rt = sendto(*(holder->send_fd), buf, len, 0,
+                  (struct sockaddr *)(holder->send_addr), SIZE);
+  if (rt < 0) {
+#if __DEBUG
+    printf("%s sendto failed: %d\n", holder->name, rt);
+#endif
+  }
+  return rt;
+}
+
+void fill_buf(udp_holder *holder, const char *buf, size_t len) {
+  int quit = 0;
+  while (holder->active) {
+    LOCK;
+    if (widx < ridx + WND_SIZE) {
+      char *ptr = malloc(len);
+      memcpy(ptr, buf, len);
+      int idx = (int)(widx++ % WND_SIZE);
+      recv_buf_ptr[idx] = (long)ptr;
+      recv_buf_len[idx] = len;
+      quit = 1;
+    }
+    UNLOCK;
+    if (quit) {
+      break;
+    }
+#if __DEBUG
+    printf("buf is full: %lld/%lld\n", widx, ridx);
+#endif
+  }
 }
 
 void udp_recv0(udp_holder *holder) {
@@ -117,6 +161,9 @@ void udp_recv0(udp_holder *holder) {
     len = recvfrom(*udp_recv_fd, buf, MAXLINE, 0, (struct sockaddr *)&cli_sock,
                    &udp_addr_len);
     if (len < 0) {
+#if __DEBUG
+      printf("%s recvfrom failed: %d\n", holder->name, len);
+#endif
       continue;
     }
     if (!holder->active) {
@@ -125,7 +172,7 @@ void udp_recv0(udp_holder *holder) {
 #if __DEBUG
     printf("%s received %d bytes\n", holder->name, len);
 #endif
-    ikcp_input(kcp, buf, len);
+    fill_buf(holder, buf, len);
   }
 }
 
@@ -165,8 +212,30 @@ void udp_sock(int mode, int *udp_fd, struct sockaddr_in *udp_addr, int port) {
 #endif
 }
 
+void fetch_buf(ikcpcb *kcp) {
+  LOCK;
+  int count = 0;
+  int idx;
+  char *ptr;
+  int len;
+  while (widx > ridx && count < max_fetch_times) {
+#if __DEBUG
+    printf("read from buf: %lld/%lld\n", widx, ridx);
+#endif
+    idx = (int)(ridx++ % WND_SIZE);
+    ptr = (char *)recv_buf_ptr[idx];
+    len = recv_buf_len[idx];
+    ikcp_input(kcp, ptr, len);
+    free(ptr);
+    count++;
+  }
+  UNLOCK;
+}
+
 void test_kcp(int mode, void *(*udp_func)(void *args),
               void *(*kcp_func)(void *args)) {
+  recv_buf_ptr = malloc(WND_SIZE * sizeof(long));
+  recv_buf_len = malloc(WND_SIZE * sizeof(int));
   int udp_send_fd;
   int udp_recv_fd;
   struct sockaddr_in udp_send_addr;
@@ -199,30 +268,22 @@ void test_kcp(int mode, void *(*udp_func)(void *args),
   pthread_join(th_udp, &status_udp);
   // release
   ikcp_release(kcp);
+  free(recv_buf_ptr);
+  free(recv_buf_len);
+}
+
+long double calc_avg(const IUINT64 *store, int size) {
+  double sum = 0.0;
+  for (int i = 0; i < size; i++) {
+    sum += store[i];
+  }
+  return sum / size;
 }
 
 int compare(const void *a, const void *b) {
   IUINT64 *la = (IUINT64 *)a;
   IUINT64 *lb = (IUINT64 *)b;
   return *la == *lb ? 0 : (*la > *lb ? 1 : -1);
-}
-
-void printLatency0(const IUINT64 *store) {
-  for (int i = 0; i < TIMES; i++) {
-    if (i % 20 == 0) {
-      printf("\n");
-    }
-    printf("%lld, ", store[i]);
-  }
-  printf("\n");
-}
-
-double calc_avg(const IUINT64 *store, int size) {
-  double sum = 0.0;
-  for (int i = 0; i < size; i++) {
-    sum += store[i];
-  }
-  return sum / size;
 }
 
 void printLatency(const IUINT64 *store) {
@@ -232,16 +293,16 @@ void printLatency(const IUINT64 *store) {
   IUINT64 max = store[TIMES - 1];
   printf("latency detail:\n");
   printf("------\n");
-  printf("avg     : % 0.4fns\n\n", avg);
-  printf("min     : % 9lldns\n", min);
+  printf("avg     : % 6.2fns\n\n", avg);
+  printf("min     : %9lluns\n", min);
   int prec_lines[] = {1, 5, 25, 50, 75, 95, 99};
   int prec_line;
   for (int i = 0; i < 7; i++) {
     prec_line = prec_lines[i];
-    printf("line %02d%%: % 9lldns\n", prec_line,
+    printf("line %02d%%: %9lluns\n", prec_line,
            store[(int)(TIMES * prec_line / 100.0)]);
   }
-  printf("max     : % 9lldns\n", max);
+  printf("max     : %9lluns\n", max);
   printf("------\n");
 }
 
