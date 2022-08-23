@@ -43,6 +43,7 @@ max     :    113871ns
 
 ```shell
 $> mkdir build
+$> cd build
 $> cmake .. && make
 ```
 
