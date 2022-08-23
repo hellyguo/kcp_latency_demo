@@ -160,14 +160,14 @@ void udp_recv0(udp_holder *holder) {
   while (holder->active) {
     len = recvfrom(*udp_recv_fd, buf, MAXLINE, 0, (struct sockaddr *)&cli_sock,
                    &udp_addr_len);
+    if (!holder->active) {
+      break;
+    }
     if (len < 0) {
 #if __DEBUG
       printf("%s recvfrom failed: %d\n", holder->name, len);
 #endif
       continue;
-    }
-    if (!holder->active) {
-      break;
     }
 #if __DEBUG
     printf("%s received %d bytes\n", holder->name, len);

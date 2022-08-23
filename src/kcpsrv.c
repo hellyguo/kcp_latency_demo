@@ -1,4 +1,3 @@
-#include "ikcp.h"
 #include "kcpdemo.h"
 
 IUINT64 *latencyStore;
