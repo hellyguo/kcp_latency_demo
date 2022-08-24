@@ -9,8 +9,8 @@ void loop_send_kcp0(udp_holder *holder) {
   timestamp tsx;
   while (1) {
     usleep(1000);
-    tsx = iclockX();
     fetch_buf(kcp);
+    tsx = iclockX();
     ikcp_update(kcp, tsx.currentMills);
     if (rt >= WND_SIZE) {
 #if __DEBUG
