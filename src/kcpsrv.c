@@ -5,14 +5,16 @@ IUINT64 *latencyStore;
 void echo_kcp0(udp_holder *holder) {
   ikcpcb *kcp = holder->kcp;
   char buf[DATA_SIZE];
+  int count = 0;
   const char *p;
   int rt;
-  int count = 0;
   IUINT64 sec;
   IUINT64 nsec;
   timestamp tsx;
   while (1) {
+    // 获取底层数据包
     fetch_buf(kcp);
+    // 获取时间戳并更新kcp，从kcp读取数据
     tsx = iclockX();
     ikcp_update(kcp, tsx.currentMills);
     rt = ikcp_recv(kcp, buf, DATA_SIZE);
@@ -23,6 +25,7 @@ void echo_kcp0(udp_holder *holder) {
 #endif
       continue;
     }
+    // 解析时间戳并计算延时
     p = buf;
     p = decode64u(p, &sec);
     p = decode64u(p, &nsec);
@@ -31,9 +34,8 @@ void echo_kcp0(udp_holder *holder) {
     printf("%s received: %llu.%llu, current: %llu.%llu, %d packages\n",
            holder->name, sec, nsec, tsx.sec, tsx.nsec, count);
 #endif
-    if (count >= TIMES) {
-      holder->active = 0;
-      shutdown(*holder->recv_fd, SHUT_RDWR);
+    // 校验退出
+    if (check_quit(holder, &count)) {
       break;
     }
   }

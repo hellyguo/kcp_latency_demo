@@ -232,6 +232,15 @@ void fetch_buf(ikcpcb *kcp) {
   UNLOCK;
 }
 
+int check_quit(udp_holder *holder, int *count) {
+  if (*count >= TIMES) {
+    holder->active = 0;
+    shutdown(*holder->recv_fd, SHUT_RDWR);
+    return 1;
+  }
+  return 0;
+}
+
 void test_kcp(int mode, void *(*udp_func)(void *args),
               void *(*kcp_func)(void *args)) {
   recv_buf_ptr = malloc(WND_SIZE * sizeof(long));
