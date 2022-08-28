@@ -7,10 +7,10 @@ set(CMAKE_BUILD_TYPE "Debug")
 include_directories(include)
 link_directories(lib)
 
-add_executable(kcpcli src/kcpcli.c)
+add_executable(kcpcli src/pthread/kcpcli.c)
 target_link_libraries(kcpcli kcp)
 set_target_properties(kcpcli PROPERTIES COMPILE_FLAGS "-pthread" LINK_FLAGS "-pthread")
-add_executable(kcpsrv src/kcpsrv.c)
+add_executable(kcpsrv src/pthread/kcpsrv.c)
 target_link_libraries(kcpsrv kcp)
 set_target_properties(kcpsrv PROPERTIES COMPILE_FLAGS "-pthread" LINK_FLAGS "-pthread")
 
