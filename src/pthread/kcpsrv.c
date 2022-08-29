@@ -16,7 +16,7 @@ void echo_kcp0(udp_holder *holder) {
     fetch_buf(kcp);
     // 获取时间戳并更新kcp，从kcp读取数据
     tsx = iclockX();
-    ikcp_update(kcp, tsx.currentMills);
+    ikcp_update(kcp, tsx.curr_ms);
     rt = ikcp_recv(kcp, buf, DATA_SIZE);
     if (rt < 0) {
 #if __DEBUG

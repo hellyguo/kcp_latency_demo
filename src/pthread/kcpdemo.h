@@ -44,7 +44,7 @@ typedef struct udp_holder udp_holder;
 struct timestamp {
   IUINT64 sec;
   IUINT64 nsec;
-  IUINT32 currentMills;
+  IUINT32 curr_ms;
 };
 
 typedef struct timestamp timestamp;
@@ -73,7 +73,7 @@ static inline timestamp iclockX() {
   tsx.sec = ts.tv_sec;
   tsx.nsec = ts.tv_nsec;
   IINT64 timestamp = ((IINT64)ts.tv_sec) * 1000 + (ts.tv_nsec / 1000);
-  tsx.currentMills = (IUINT32)(timestamp & 0xfffffffful);
+  tsx.curr_ms = (IUINT32)(timestamp & 0xfffffffful);
   return tsx;
 }
 

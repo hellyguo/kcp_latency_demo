@@ -14,7 +14,7 @@ void loop_send_kcp0(udp_holder *holder) {
     fetch_buf(kcp);
     // 获取时间戳并更新kcp
     tsx = iclockX();
-    ikcp_update(kcp, tsx.currentMills);
+    ikcp_update(kcp, tsx.curr_ms);
     if (rt >= WND_SIZE) {
 #if __DEBUG
       printf("%s too many wait msgs: %d packages\n", holder->name, rt);
