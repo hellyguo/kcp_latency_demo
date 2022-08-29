@@ -20,7 +20,7 @@
 const int UDP_CLI_PORT = 54321;
 const int UDP_SRV_PORT = 12345;
 
-const int TIMES = 1000;
+const int TIMES = 1000000;
 
 const int MAXLINE = 1024;
 
@@ -284,7 +284,7 @@ void test_kcp(int mode, void (*kcp_recv_func)(struct ev_loop *loop,
   struct ev_loop *loop = ev_loop_new(EVFLAG_NOENV | EVBACKEND_EPOLL);
   ev_io_init(&io_w, udp_recv_cb, udp_recv_fd, EV_READ);
   ev_io_start(loop, &io_w);
-  ev_timer_init(&tm_w, timeout_cb, 0.1, 0.01);
+  ev_timer_init(&tm_w, timeout_cb, 0.1, 0.001);
   ev_timer_start(loop, &tm_w);
   ev_run(loop, 0);
   ev_loop_destroy(loop);
