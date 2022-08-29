@@ -20,7 +20,7 @@
 const int UDP_CLI_PORT = 54321;
 const int UDP_SRV_PORT = 12345;
 
-const int TIMES = 1000000;
+const int TIMES = 1000;
 
 const int MAXLINE = 1024;
 
