@@ -13,7 +13,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define __DEBUG 1
+#define __DEBUG 0
 
 const int UDP_CLI_PORT = 54321;
 const int UDP_SRV_PORT = 12345;

@@ -17,8 +17,9 @@
 
 ## 测试结果
 
-- pthread 测试结果：[using pthread](result.pthread.md)
-- libev 测试结果：[using libev](result.libev.md)
+- libev 测试结果：[纯 kcp 实现](result.kcp.md)
+- pthread 测试结果：[kcp + pthread 实现](result.pthread.md)
+- libev 测试结果：[kcp + libev 实现](result.libev.md)
 
 从测试结果看，相当稳定。
 
@@ -45,15 +46,17 @@ $> cmake .. && make
 
 ```shell
 $> cd build
-$> ./kcpsrv
+$> ./kcpsrv[n]
 ```
 
 **终端2**
 
 ```shell
 $> cd build
-$> ./kcpcli
+$> ./kcpcli[n]
 ```
+
+`n` 可取 `[0,1,2]`, 分别对应于纯 `kcp` 实现/`kcp`+`pthread` 实现/`kcp`+`libev` 实现
 
 ## TODO
 
