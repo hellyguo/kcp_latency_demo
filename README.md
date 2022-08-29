@@ -26,8 +26,8 @@
 
 **前提**
 
-- 将 `libkcp.a` 放于 `lib` 内
-- 或将 `libkcp.a` 安装到 `/usr` 下
+- 将 `libkcp.a` 及 `libev.a` 放于 `lib` 内
+- 或将 `libkcp.a` 及 `libev.a` 安装到 `/usr` 下
 
 ```shell
 $> mkdir build
