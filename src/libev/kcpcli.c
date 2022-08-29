@@ -1,8 +1,14 @@
-#include "ikcp.h"
 #include "kcpdemo.h"
+
+static char *buf;
 
 void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
   ikcpcb *kcp = holder->kcp;
+  // 获取底层数据包
+  fetch_buf(kcp);
+  // 获取时间戳并更新kcp
+  timestamp tsx = iclockX();
+  ikcp_update(kcp, tsx.curr_ms);
   int rt = ikcp_waitsnd(kcp);
   if (rt >= WND_SIZE) {
 #if __DEBUG
@@ -10,16 +16,8 @@ void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
 #endif
     return;
   }
-  char buf[DATA_SIZE];
-  char *p;
-  timestamp tsx;
-  // 获取底层数据包
-  fetch_buf(kcp);
-  // 获取时间戳并更新kcp
-  tsx = iclockX();
-  ikcp_update(kcp, tsx.curr_ms);
   // 获得时间戳并发送
-  p = buf;
+  char *p = buf;
   p = encode64u(p, tsx.sec);
   p = encode64u(p, tsx.nsec);
   rt = ikcp_send(kcp, buf, DATA_SIZE);
@@ -28,7 +26,6 @@ void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
     return;
   }
   ikcp_flush(kcp);
-  rt = ikcp_waitsnd(kcp);
   ++holder->count;
 #if __DEBUG
   printf("%s sent: %d packages, %d packages waiting\n", holder->name,
@@ -42,6 +39,8 @@ void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
 }
 
 int main(int argc, char *argv[]) {
+  buf = malloc(DATA_SIZE);
   test_kcp(1, loop_send_kcp);
+  free(buf);
   return 0;
 }
