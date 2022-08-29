@@ -2,8 +2,6 @@
 
 #define _KCP_DEMO_H
 
-#define __DEBUG 0
-
 #include "ikcp.h"
 #include <arpa/inet.h>
 #include <bits/types/struct_timespec.h>
@@ -15,6 +13,8 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+
+#define __DEBUG 0
 
 const int UDP_CLI_PORT = 54321;
 const int UDP_SRV_PORT = 12345;

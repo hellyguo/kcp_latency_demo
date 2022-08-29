@@ -5,8 +5,6 @@ static char *buf;
 
 void echo_kcp(struct ev_loop *loop, udp_holder *holder) {
   ikcpcb *kcp = holder->kcp;
-  IUINT64 sec;
-  IUINT64 nsec;
   // 获取底层数据包
   fetch_buf(kcp);
   // 获取时间戳并更新kcp，从kcp读取数据
@@ -21,6 +19,8 @@ void echo_kcp(struct ev_loop *loop, udp_holder *holder) {
     return;
   }
   // 解析时间戳并计算延时
+  IUINT64 sec;
+  IUINT64 nsec;
   const char *p = buf;
   p = decode64u(p, &sec);
   p = decode64u(p, &nsec);
