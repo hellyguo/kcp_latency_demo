@@ -40,7 +40,7 @@ max     :   5714344ns
 ```
 
 百万次
-```
+```verilog
 latency detail:
 ------
 avg     :  13860.78ns
