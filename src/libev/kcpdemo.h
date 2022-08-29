@@ -67,9 +67,6 @@ long long padding3[7];
 long *recv_buf_ptr;
 int *recv_buf_len;
 
-#define LOCK pthread_mutex_lock(&lock)
-#define UNLOCK pthread_mutex_unlock(&lock)
-
 /* get system time */
 static inline timestamp iclockX() {
   struct timespec ts;
