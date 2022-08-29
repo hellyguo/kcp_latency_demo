@@ -40,6 +40,7 @@ max     :   5714344ns
 ```
 
 百万次
+```
 latency detail:
 ------
 avg     :  13860.78ns
