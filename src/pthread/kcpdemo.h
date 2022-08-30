@@ -54,9 +54,9 @@ pthread_mutex_t lock;
 const int max_fetch_times = 100;
 
 long long padding1[7];
-long long widx = 0;
+long long volatile widx = 0;
 long long padding2[7];
-long long ridx = 0;
+long long volatile ridx = 0;
 long long padding3[7];
 
 long *recv_buf_ptr;
