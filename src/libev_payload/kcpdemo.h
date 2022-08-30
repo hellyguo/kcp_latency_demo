@@ -30,6 +30,10 @@ const int WND_SIZE = 8192;
 
 const int DATA_SIZE = 16;
 
+const int PAYLOAD_SIZE = 472;
+
+const int FULL_DATA_SIZE = DATA_SIZE + PAYLOAD_SIZE;
+
 struct udp_holder {
   ikcpcb *kcp;
   int *send_fd;

@@ -1,6 +1,7 @@
 #include "kcpdemo.h"
 
 static char *buf;
+static char *payload;
 
 void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
   ikcpcb *kcp = holder->kcp;
@@ -20,7 +21,8 @@ void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
   char *p = buf;
   p = encode64u(p, tsx.sec);
   p = encode64u(p, tsx.nsec);
-  rt = ikcp_send(kcp, buf, DATA_SIZE);
+  memcpy(p, payload, PAYLOAD_SIZE);
+  rt = ikcp_send(kcp, buf, FULL_DATA_SIZE);
   // 强制刷新，确保第一时间发出，降低延时
   if (rt < 0) {
     return;
@@ -39,8 +41,11 @@ void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
 }
 
 int main(int argc, char *argv[]) {
-  buf = malloc(DATA_SIZE * sizeof(char));
+  buf = malloc(FULL_DATA_SIZE * sizeof(char));
+  payload = malloc(PAYLOAD_SIZE * sizeof(char));
+  memset(payload, 'z', PAYLOAD_SIZE);
   test_kcp(1, loop_send_kcp);
   free(buf);
+  free(payload);
   return 0;
 }
