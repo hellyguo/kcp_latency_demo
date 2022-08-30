@@ -1,5 +1,6 @@
 # 样本
 
+[ 62%] Built target kcpsrv2
 测试 [KCP](https://github.com/skywind3000/kcp/) 延时的样例程序
 
 **说明**
@@ -66,7 +67,7 @@ $> ./kcpcli[n]
 
 ## TODO
 
-1. 添加负载，测试不同负载下的结果
+1. ~~添加负载，测试不同负载下的结果~~
 
 ## 缺陷
 
