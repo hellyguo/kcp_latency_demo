@@ -1,6 +1,5 @@
 # 样本
 
-[ 62%] Built target kcpsrv2
 测试 [KCP](https://github.com/skywind3000/kcp/) 延时的样例程序
 
 **说明**
