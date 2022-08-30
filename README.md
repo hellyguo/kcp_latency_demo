@@ -17,9 +17,10 @@
 
 ## 测试结果
 
-- libev 测试结果：[纯 kcp 实现](result.kcp.md)
-- pthread 测试结果：[kcp + pthread 实现](result.pthread.md)
-- libev 测试结果：[kcp + libev 实现](result.libev.md)
+- 纯 `kcp` 测试结果：[纯 kcp 实现](result.kcp.md)
+- `kcp` + `pthread` 测试结果：[kcp + pthread 实现](result.pthread.md)
+- `kcp` + `libev` 测试结果：[kcp + libev 实现](result.libev.md)
+- `kcp` + `libev` 带负载测试结果：[kcp + libev 带负载实现](result.libev.payload.md)
 
 从测试结果看，相当稳定。
 
@@ -56,7 +57,12 @@ $> cd build
 $> ./kcpcli[n]
 ```
 
-`n` 可取 `[0,1,2]`, 分别对应于纯 `kcp` 实现/`kcp`+`pthread` 实现/`kcp`+`libev` 实现
+`n` 可取 `[0,1,2,3]`, 分别对应于:
+
+1. 纯 `kcp` 实现
+2. `kcp`+`pthread` 实现
+3. `kcp`+`libev` 实现
+4. `kcp`+`libev` 带负载实现
 
 ## TODO
 
