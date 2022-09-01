@@ -28,3 +28,8 @@ add_executable(kcpcli3 src/libev_payload/kcpcli.c)
 target_link_libraries(kcpcli3 kcp ev)
 add_executable(kcpsrv3 src/libev_payload/kcpsrv.c)
 target_link_libraries(kcpsrv3 kcp ev)
+
+add_executable(kcpcli4 src/libev_remote/kcpcli.c)
+target_link_libraries(kcpcli4 kcp ev)
+add_executable(kcpsrv4 src/libev_remote/kcpsrv.c)
+target_link_libraries(kcpsrv4 kcp ev)
