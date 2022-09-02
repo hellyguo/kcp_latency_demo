@@ -17,10 +17,10 @@
 
 ## 测试结果
 
-- 纯 `kcp` 测试结果：[纯 kcp 实现](result.kcp.md)
-- `kcp` + `pthread` 测试结果：[kcp + pthread 实现](result.pthread.md)
-- `kcp` + `libev` 测试结果：[kcp + libev 实现](result.libev.md)
-- `kcp` + `libev` 带负载测试结果：[kcp + libev 带负载实现](result.libev.payload.md)
+- 纯 `kcp` 测试结果：[纯 kcp 实现](result.00kcp.md)
+- `kcp` + `pthread` 测试结果：[kcp + pthread 实现](result.01pthread.md)
+- `kcp` + `libev` 测试结果：[kcp + libev 实现](result.02libev.md)
+- `kcp` + `libev` 带负载测试结果：[kcp + libev 带负载实现](result.03libev.payload.md)
 
 从测试结果看，相当稳定。
 
@@ -48,6 +48,8 @@ $> cmake .. && make
 ```shell
 $> cd build
 $> ./kcpsrv[n]
+or
+$> ./kcpsrv[n] <client ip(format: a.b.c.d)> #n=4,5
 ```
 
 **终端2**
@@ -55,14 +57,18 @@ $> ./kcpsrv[n]
 ```shell
 $> cd build
 $> ./kcpcli[n]
+or
+$> ./kcpcli[n] <server ip(format: a.b.c.d)> #n=4,5
 ```
 
-`n` 可取 `[0,1,2,3]`, 分别对应于:
+`n` 可取 `[0,1,2,3,4,5]`, 分别对应于:
 
 1. 纯 `kcp` 实现
 2. `kcp`+`pthread` 实现
 3. `kcp`+`libev` 实现
 4. `kcp`+`libev` 带负载实现
+5. `kcp`+`libev` 支持远端实现
+5. `kcp`+`libev` 支持远端实现，延时为客户端发出并收回时间
 
 ## TODO
 
