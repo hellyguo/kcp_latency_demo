@@ -4,6 +4,13 @@ project(Demo_GIT C)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_BUILD_TYPE "Debug")
 
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    message(STATUS "Set up ccache ... ${CCACHE_PROGRAM}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}") # Less useful to do it for linking, see edit2
+endif()
+
 include_directories(include)
 link_directories(lib)
 
