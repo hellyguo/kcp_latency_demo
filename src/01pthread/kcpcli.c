@@ -4,7 +4,7 @@ void loop_send_kcp0(udp_holder *holder) {
   ikcpcb *kcp = holder->kcp;
   int count = 0;
   char buf[DATA_SIZE];
-  int rt;
+  int rt = 0;
   char *p;
   timestamp tsx;
   while (1) {
