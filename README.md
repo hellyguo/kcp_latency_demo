@@ -17,10 +17,10 @@
 
 ## 测试结果
 
-- 纯 `kcp` 测试结果：[纯 kcp 实现](result.00kcp.md)
-- `kcp` + `pthread` 测试结果：[kcp + pthread 实现](result.01pthread.md)
-- `kcp` + `libev` 测试结果：[kcp + libev 实现](result.02libev.md)
-- `kcp` + `libev` 带负载测试结果：[kcp + libev 带负载实现](result.03libev.payload.md)
+- 纯 `kcp` 测试结果：[纯 kcp 实现](result.00.kcp.md)
+- `kcp` + `pthread` 测试结果：[kcp + pthread 实现](result.01.pthread.md)
+- `kcp` + `libev` 测试结果：[kcp + libev 实现](result.02.libev.md)
+- `kcp` + `libev` 带负载测试结果：[kcp + libev 带负载实现](result.03.libev.payload.md)
 
 从测试结果看，相当稳定。
 
