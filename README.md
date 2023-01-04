@@ -63,12 +63,26 @@ $> ./kcpcli[n] <server ip(format: a.b.c.d)> #n=4,5
 
 `n` 可取 `[0,1,2,3,4,5]`, 分别对应于:
 
-1. 纯 `kcp` 实现
-2. `kcp`+`pthread` 实现
-3. `kcp`+`libev` 实现
-4. `kcp`+`libev` 带负载实现
-5. `kcp`+`libev` 支持远端实现
-5. `kcp`+`libev` 支持远端实现，延时为客户端发出并收回时间
+| 编号 | 含义 |
+|-----|-----|
+| 0 | 纯 `kcp` 实现 |
+| 1 | `kcp`+`pthread` 实现 |
+| 2 | `kcp`+`libev` 实现 |
+| 3 | `kcp`+`libev` 带负载实现 |
+| 4 | `kcp`+`libev` 支持远端实现 |
+| 5 | `kcp`+`libev` 支持远端实现，延时为客户端发出并收回时间 |
+
+## 最佳效果
+
+通过将应用绑定在不同的 `CPU` 核，得到最佳性能
+
+```shell
+taskset -c 0,1 ./kcpsrv4 127.0.0.1 &
+taskset -c 4,5 ./kcpcli4 127.0.0.1
+
+taskset -c 0,1 ./kcpsrv5 127.0.0.1 &
+taskset -c 4,5 ./kcpcli5 127.0.0.1
+```
 
 ## TODO
 
