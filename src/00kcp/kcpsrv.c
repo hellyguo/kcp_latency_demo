@@ -23,7 +23,7 @@ void echo_kcp(udp_holder *holder) {
   IUINT64 nsec;
   const char *p = buf;
   p = decode64u(p, &sec);
-  p = decode64u(p, &nsec);
+  decode64u(p, &nsec);
   latencyStore[holder->count++] =
       (tsx.sec - sec) * 1000000000UL + tsx.nsec - nsec;
 #if __DEBUG

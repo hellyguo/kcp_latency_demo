@@ -19,7 +19,7 @@ void loop_send_kcp(struct ev_loop *loop, udp_holder *holder) {
   // 获得时间戳并发送
   char *p = buf;
   p = encode64u(p, tsx.sec);
-  p = encode64u(p, tsx.nsec);
+  encode64u(p, tsx.nsec);
   rt = ikcp_send(kcp, buf, DATA_SIZE);
   // 强制刷新，确保第一时间发出，降低延时
   if (rt < 0) {

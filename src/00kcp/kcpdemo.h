@@ -146,12 +146,11 @@ void fill_buf(udp_holder *holder, const char *buf, size_t len) {
 }
 
 void udp_recv(udp_holder *holder) {
-  char buf[MAXLINE];
-  ikcpcb *kcp = holder->kcp;
+  char buf2[MAXLINE];
   int *udp_recv_fd = holder->recv_fd;
   struct sockaddr_in cli_sock;
   socklen_t udp_addr_len = SIZE;
-  int len = recvfrom(*udp_recv_fd, buf, MAXLINE, 0,
+  int len = recvfrom(*udp_recv_fd, buf2, MAXLINE, 0,
                      (struct sockaddr *)&cli_sock, &udp_addr_len);
   if (len < 0) {
 #if __DEBUG
@@ -161,7 +160,7 @@ void udp_recv(udp_holder *holder) {
 #if __DEBUG
   printf("%s received %d bytes\n", holder->name, len);
 #endif
-  fill_buf(holder, buf, len);
+  fill_buf(holder, buf2, len);
 }
 
 void udp_sock(int mode, int *udp_fd, struct sockaddr_in *udp_addr, int port) {
@@ -285,9 +284,8 @@ void printLatency(const IUINT64 *store) {
   printf("avg     : % 6.2fns\n\n", avg);
   printf("min     : %9lluns\n", min);
   int prec_lines[] = {1, 5, 25, 50, 75, 95, 99};
-  int prec_line;
   for (int i = 0; i < 7; i++) {
-    prec_line = prec_lines[i];
+    int prec_line = prec_lines[i];
     printf("line %02d%%: %9lluns\n", prec_line,
            store[(int)(TIMES * prec_line / 100.0)]);
   }

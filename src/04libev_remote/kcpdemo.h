@@ -172,7 +172,6 @@ void udp_recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
   }
   udp_holder *holder = (udp_holder *)w->data;
   ev_timer_again(loop, holder->tm_w);
-  ikcpcb *kcp = holder->kcp;
   int *udp_recv_fd = holder->recv_fd;
   struct sockaddr_in cli_sock;
   socklen_t udp_addr_len = SIZE;
@@ -358,9 +357,8 @@ void printLatency(const IUINT64 *store) {
   printf("avg     : % 6.2fns\n\n", avg);
   printf("min     : %9lluns\n", min);
   int prec_lines[] = {1, 5, 25, 50, 75, 95, 99};
-  int prec_line;
   for (int i = 0; i < 7; i++) {
-    prec_line = prec_lines[i];
+    int prec_line = prec_lines[i];
     printf("line %02d%%: %9lluns\n", prec_line,
            store[(int)(TIMES * prec_line / 100.0)]);
   }

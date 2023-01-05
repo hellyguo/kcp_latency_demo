@@ -305,9 +305,8 @@ void printLatency(const IUINT64 *store) {
   printf("avg     : % 6.2fns\n\n", avg);
   printf("min     : %9lluns\n", min);
   int prec_lines[] = {1, 5, 25, 50, 75, 95, 99};
-  int prec_line;
   for (int i = 0; i < 7; i++) {
-    prec_line = prec_lines[i];
+    int prec_line = prec_lines[i];
     printf("line %02d%%: %9lluns\n", prec_line,
            store[(int)(TIMES * prec_line / 100.0)]);
   }

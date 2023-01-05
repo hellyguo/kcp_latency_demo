@@ -22,18 +22,20 @@ void loop_send_kcp(udp_holder *holder) {
   // 获得时间戳并发送
   char *p = buf;
   p = encode64u(p, tsx.sec);
-  p = encode64u(p, tsx.nsec);
+  encode64u(p, tsx.nsec);
   rt = ikcp_send(kcp, buf, DATA_SIZE);
   // 强制刷新，确保第一时间发出，降低延时
   if (rt < 0) {
     return;
   }
   ikcp_flush(kcp);
-  rt = ikcp_waitsnd(kcp);
   ++holder->count;
 #if __DEBUG
+  rt = ikcp_waitsnd(kcp);
   printf("%s sent: %d packages, %d packages waiting\n", holder->name,
          holder->count, rt);
+#else
+  ikcp_waitsnd(kcp);
 #endif
   // 校验退出
   if (check_quit(holder)) {

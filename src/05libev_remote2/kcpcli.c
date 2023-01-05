@@ -12,7 +12,7 @@ void test_recv(udp_holder *holder, ikcpcb *kcp, timestamp *tsx) {
     IUINT64 nsec;
     const char *p = buf;
     p = decode64u(p, &sec);
-    p = decode64u(p, &nsec);
+    decode64u(p, &nsec);
 #if __DEBUG
     printf("%s received: %llu.%llu, current: %llu.%llu, %d packages\n",
            holder->name, sec, nsec, tsx->sec, tsx->nsec, holder->recv_cnt);
@@ -42,7 +42,7 @@ void test_send(udp_holder *holder, ikcpcb *kcp) {
   // 获得时间戳并发送
   char *p = buf;
   p = encode64u(p, tsx.sec);
-  p = encode64u(p, tsx.nsec);
+  encode64u(p, tsx.nsec);
   rt = ikcp_send(kcp, buf, DATA_SIZE);
   // 强制刷新，确保第一时间发出，降低延时
   if (rt < 0) {
